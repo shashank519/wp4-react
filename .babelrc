@@ -15,7 +15,10 @@
     "syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
     "@babel/plugin-proposal-export-default-from",
-    ["lodash", { "id": ["lodash", "semantic-ui-react"] }]
+    [
+      "import",
+      { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }
+    ]
   ],
   "env": {
     "development": {

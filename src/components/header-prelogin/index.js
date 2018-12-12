@@ -1,71 +1,42 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 
-import { Menu } from "semantic-ui-react";
+import { Menu } from "antd";
 
 class HeaderPreLogin extends React.Component {
-  state = { activeItem: "" };
+  constructor(props) {
+    super(props);
 
-  handleRoutes = route => {
-    this.setState({ activeItem: route });
-    this.props.history.push(`/${route}`);
+    this.state = {
+      activeTab: "",
+      menuItems: [
+        { key: 0, label: "Login", route: "login" },
+        { key: 1, label: "Register", route: "register" }
+      ]
+    };
+  }
+
+  handleRoutes = tab => {
+    this.setState({ activeTab: tab });
+    this.props.history.push(`/${tab.route}`);
   };
 
   render() {
-    const { activeItem } = this.state;
-
     return (
-      <Menu stackable>
-        <Menu.Item>
-          <img
-            alt="company logo"
-            src="https://react.semantic-ui.com/logo.png"
-          />
-        </Menu.Item>
-
-        <Menu.Item
-          name="features"
-          active={activeItem === "features"}
-          onClick={this.handleItemClick}
-        >
-          Features
-        </Menu.Item>
-        <Menu.Item
-          name="about-us"
-          active={activeItem === "about-us"}
-          onClick={this.handleItemClick}
-        >
-          About US
-        </Menu.Item>
-
-        <Menu.Menu position="right">
-          <Menu.Item
-            name="login"
-            active={activeItem === "login"}
-            onClick={() => this.handleRoutes("login")}
-          >
-            Login
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={[String(this.state.activeTab.key)]}
+        style={{ lineHeight: "50px" }}
+      >
+        {this.state.menuItems.map((row, i) => (
+          <Menu.Item key={i} onClick={() => this.handleRoutes(row)}>
+            {row.label}
           </Menu.Item>
-          <Menu.Item
-            name="register"
-            active={activeItem === "register"}
-            onClick={() => this.handleRoutes("register")}
-          >
-            Sign Up
-          </Menu.Item>
-          <Menu.Item
-            name="help"
-            active={activeItem === "help"}
-            onClick={this.handleItemClick}
-          >
-            Help
-          </Menu.Item>
-        </Menu.Menu>
+        ))}
       </Menu>
     );
   }
 }
 
 export default withRouter(HeaderPreLogin);
-
-// export default HeaderPreLogin;

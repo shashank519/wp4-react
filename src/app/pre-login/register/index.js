@@ -1,83 +1,123 @@
 import React, { Component } from "react";
 import PreLoginContainer from "Components/pre-login-container";
-import { Card, Icon, Form, Button } from "semantic-ui-react";
+import { Form, Input, Tooltip, Icon, Button, Card } from "antd";
 import "./Register.scss";
 
+const FormItem = Form.Item;
+
 class Register extends Component {
-  constructor(props) {
-    super();
-
-    this.state = {
-      name: "",
-      email: "",
-      password: "",
-      age: ""
-    };
-  }
-
-  handleChange = ({ target: { name, value } }) => {
-    console.log(name, value);
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = () => {
-    const { name, email, password, age } = this.state;
-    console.log(name, age, password, email);
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
+    });
   };
 
   render() {
+    const { getFieldDecorator } = this.props.form;
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      }
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0
+        },
+        sm: {
+          span: 16,
+          offset: 8
+        }
+      }
+    };
+
     return (
-      <PreLoginContainer style={{ top: "50%", left: "35%", width: "500px" }}>
-        <Card className="pre-login-reg-card" style={{ width: "100%" }}>
+      <PreLoginContainer style={{ top: "15%", left: "35%", width: "500px" }}>
+        <Card
+          title="Register"
+          className="pre-login-reg-card"
+          style={{ width: "100%" }}
+        >
           <Form className="pl-reg-form" onSubmit={this.handleSubmit}>
-            <Form.Field required>
-              <label>Name</label>
-              <input
-                placeholder="Name"
-                name="name"
-                onChange={this.handleChange}
-              />
-            </Form.Field>
-            <Form.Field required>
-              <label>Email</label>
-              <input
-                placeholder="Name"
-                type="email"
-                name="email"
-                onChange={this.handleChange}
-              />
-            </Form.Field>
-            <Form.Field required>
-              <label>Password</label>
-              <input
-                placeholder="Password"
-                type="password"
-                name="password"
-                onChange={this.handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Age</label>
-              <input
-                placeholder="Age"
-                type="number"
-                name="age"
-                onChange={this.handleChange}
-              />
-            </Form.Field>
-            <Button type="submit" primary>
-              Register
-            </Button>
-            <Button>Forgot Password</Button>
+            <FormItem {...formItemLayout} label="Username">
+              {getFieldDecorator("userName", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your username!",
+                    whitespace: true
+                  }
+                ]
+              })(<Input />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="E-mail">
+              {getFieldDecorator("email", {
+                rules: [
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!"
+                  },
+                  {
+                    required: true,
+                    message: "Please input your E-mail!"
+                  }
+                ]
+              })(<Input />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Password">
+              {getFieldDecorator("password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your password!"
+                  }
+                ]
+              })(<Input type="password" />)}
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label={
+                <span>
+                  Nickname&nbsp;
+                  <Tooltip title="What do you want others to call you?">
+                    <Icon type="question-circle-o" />
+                  </Tooltip>
+                </span>
+              }
+            >
+              {getFieldDecorator("nickname", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your nickname!",
+                    whitespace: true
+                  }
+                ]
+              })(<Input />)}
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="primary" htmlType="submit">
+                Register
+              </Button>
+              <Button style={{ marginLeft: "5px" }}>Reset Form</Button>
+            </FormItem>
           </Form>
-          <Card.Content extra>
-            <Icon name="user" />
-            22 Friends
-          </Card.Content>
         </Card>
       </PreLoginContainer>
     );
   }
 }
 
-export default Register;
+const RegisterForm = Form.create()(Register);
+
+export default RegisterForm;

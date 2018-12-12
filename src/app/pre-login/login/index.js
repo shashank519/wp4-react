@@ -1,75 +1,103 @@
 import React, { Component } from "react";
 import PreLoginContainer from "Components/pre-login-container";
-import { Card, Icon, Form, Button } from "semantic-ui-react";
+import { withRouter } from "react-router-dom";
+
+import { Form, Input, Checkbox, Button, Card } from "antd";
 
 import "./Login.scss";
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { email: "", password: "", agreed: false };
-  }
+const FormItem = Form.Item;
 
-  handleChange = ({ target: { name, value, type, checked } }) => {
-    let fldValue = type === "checkbox" ? checked : value;
-    this.setState({ [name]: fldValue });
+class Login extends Component {
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
+    });
   };
 
-  handleSubmit = () => {
-    const { email, password, agreed } = this.state;
-    console.log(email, password, agreed);
+  handleRoutes = route => {
+    this.props.history.push(`/${route}`);
   };
 
   render() {
-    const { email, password, agreed } = this.state;
+    const { getFieldDecorator } = this.props.form;
+
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 }
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 }
+      }
+    };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0
+        },
+        sm: {
+          span: 16,
+          offset: 8
+        }
+      }
+    };
+
     return (
-      <PreLoginContainer style={{ left: "40%", top: "50%" }}>
-        <Card className="pre-login-card">
-          <Form className="pl-form" onSubmit={this.handleSubmit}>
-            <Form.Field required>
-              <label>Username/E-mail</label>
-              <input
-                placeholder="Username/E-mail"
-                name="email"
-                onChange={this.handleChange}
-                value={email}
-              />
-            </Form.Field>
-            <Form.Field required>
-              <label>Password</label>
-              <input
-                placeholder="Password"
-                type="password"
-                name="password"
-                onChange={this.handleChange}
-                value={password}
-              />
-            </Form.Field>
-            <Form.Field className="agreed-field" required>
-              <input
-                type="checkbox"
-                id="agreed"
-                name="agreed"
-                checked={agreed}
-                onChange={this.handleChange}
-              />
-              <label htmlFor="agreed">
-                I agree to the Terms and Conditions
-              </label>
-            </Form.Field>
-            <Button type="submit" primary>
-              Submit
-            </Button>
-            <Button>Forgot Password</Button>
+      <PreLoginContainer style={{ left: "38%", top: "15%" }}>
+        <Card title="Login" className="pre-login-card">
+          <Form onSubmit={this.handleSubmit}>
+            <FormItem {...formItemLayout} label="E-mail">
+              {getFieldDecorator("email", {
+                rules: [
+                  {
+                    type: "email",
+                    message: "The input is not valid E-mail!"
+                  },
+                  {
+                    required: true,
+                    message: "Please input your E-mail!"
+                  }
+                ]
+              })(<Input />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label="Password">
+              {getFieldDecorator("password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input your password!"
+                  }
+                ]
+              })(<Input type="password" />)}
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              {getFieldDecorator("agreement", {
+                valuePropName: "checked"
+              })(<Checkbox>Remember Me</Checkbox>)}
+            </FormItem>
+            <FormItem {...tailFormItemLayout}>
+              <Button type="primary" htmlType="submit">
+                Login
+              </Button>
+              <Button
+                style={{ marginLeft: "5px" }}
+                onClick={() => this.handleRoutes("register")}
+              >
+                Register Now
+              </Button>
+            </FormItem>
           </Form>
-          <Card.Content extra>
-            <Icon name="user" />
-            22 Friends
-          </Card.Content>
         </Card>
       </PreLoginContainer>
     );
   }
 }
 
-export default Login;
+const LoginForm = Form.create()(Login);
+export default withRouter(LoginForm);

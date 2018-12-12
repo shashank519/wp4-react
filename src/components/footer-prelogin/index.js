@@ -1,14 +1,14 @@
 import React from "react";
-import { Card } from "semantic-ui-react";
+import { Layout } from "antd";
 
 import "./PreloginFooter.scss";
+
+const { Footer } = Layout;
 
 class FooterPrelogin extends React.Component {
   render() {
     return (
-      <Card className="pl-footer">
-        This is Footer and footer content will come here.
-      </Card>
+      <Footer className="pl-footer">Ant Design ©2018 Created by Ant UED</Footer>
     );
   }
 }
